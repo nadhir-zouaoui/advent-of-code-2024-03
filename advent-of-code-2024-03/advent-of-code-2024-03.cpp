@@ -8,6 +8,8 @@ int main()
 {
     std::string a;
     std::string b;
+    std::string motDo;
+    std::string motDont;
     std::ifstream file("input.txt");
     if (!file.is_open()) {
         std::cout << "failed to open" << std::endl;
@@ -16,38 +18,57 @@ int main()
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     int s = 0;
     int maxlength = content.size();
+    int enable = 1;
+    int j;
     for (int i = 0; i < maxlength; i++)
     {
-        std::string motMul;
-        int j;
-        for (j = i;j<maxlength && j < i + 4;j++) {
-            motMul = motMul + content[j];
+        for (j = i;j < maxlength && j < i + 4;j++) {
+            motDo = motDo + content[j];
         }
-        if (motMul == "mul(" && content[j] <= '9' && content[j] >= '0') {
-            while (j< maxlength && content[j] <= '9' && content[j] >= '0') {
-                a += content[j];
-                j++;
-            }if (j + 1 < maxlength && content[j] == ',' && content[j+1] <= '9' && content[j+1] >= '0')
-            {
-                j++;
-                while (j < maxlength && content[j] <= '9' && content[j] >= '0') {
-                    b += content[j];
-                    j++;
-                }
-                if (content[j] == ')')
-                {
-                    s += stoi(a) * stoi(b);
-                    i = j - 1;
-                    a = "";
-                    b = "";
-                }
-                else {
-                    b = "";
-                    a = "";
-                }
+        for (j = i;j < maxlength && j < i + 7;j++) {
+            motDont = motDont + content[j];
+        }
+        if (motDo == "do()") {
+            enable = 1;
+        }
+        if (motDont =="don't()")
+        {
+            enable = 0;
+        }
+
+        if (enable) {
+            std::string motMul;
+            for (j = i;j < maxlength && j < i + 4;j++) {
+                motMul = motMul + content[j];
             }
-            else a = "";
-        }
+            if (motMul == "mul(" && content[j] <= '9' && content[j] >= '0') {
+                while (j < maxlength && content[j] <= '9' && content[j] >= '0') {
+                    a += content[j];
+                    j++;
+                }if (j + 1 < maxlength && content[j] == ',' && content[j + 1] <= '9' && content[j + 1] >= '0')
+                {
+                    j++;
+                    while (j < maxlength && content[j] <= '9' && content[j] >= '0') {
+                        b += content[j];
+                        j++;
+                    }
+                    if (content[j] == ')')
+                    {
+                        s += stoi(a) * stoi(b);
+                        i = j - 1;
+                        a = "";
+                        b = "";
+                    }
+                    else {
+                        b = "";
+                        a = "";
+                    }
+                }
+                else a = "";
+            }
+
+        }motDo = "";
+        motDont = "";
     }
     std::cout << s << std::endl;
     std::cout << "Hello World!\n";
